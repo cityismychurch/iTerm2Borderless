@@ -1,8 +1,16 @@
 diff --git a/sources/PseudoTerminal.m b/sources/PseudoTerminal.m
-index 6fa7acf5e..4a66acb91 100644
+index 11b939ad2..6817f011c 100644
 --- a/sources/PseudoTerminal.m
 +++ b/sources/PseudoTerminal.m
-@@ -440,14 +440,12 @@ static NSRect iTermRectCenteredVerticallyWithinRect(NSRect frameToCenter, NSRect
+@@ -507,7 +507,6 @@ static BOOL iTermWindowTypeIsCompact(iTermWindowType windowType) {
+             if (@available(macOS 10.14, *)) {
+                 return (mask |
+                         NSWindowStyleMaskFullSizeContentView |
+-                        NSWindowStyleMaskTitled |
+                         NSWindowStyleMaskClosable |
+                         NSWindowStyleMaskMiniaturizable |
+                         NSWindowStyleMaskResizable);
+@@ -525,7 +524,6 @@ static BOOL iTermWindowTypeIsCompact(iTermWindowType windowType) {
          case WINDOW_TYPE_COMPACT:
              return (mask |
                      NSWindowStyleMaskFullSizeContentView |
@@ -10,60 +18,26 @@ index 6fa7acf5e..4a66acb91 100644
                      NSWindowStyleMaskClosable |
                      NSWindowStyleMaskMiniaturizable |
                      NSWindowStyleMaskResizable);
-
-         default:
+@@ -533,14 +531,12 @@ static BOOL iTermWindowTypeIsCompact(iTermWindowType windowType) {
+         case WINDOW_TYPE_COMPACT_MAXIMIZED:
+             return (mask |
+                     NSWindowStyleMaskFullSizeContentView |
+-                    NSWindowStyleMaskTitled |
+                     NSWindowStyleMaskClosable |
+                     NSWindowStyleMaskMiniaturizable |
+                     NSWindowStyleMaskTexturedBackground);
+ 
+         case WINDOW_TYPE_MAXIMIZED:
+             return (mask |
+-                    NSWindowStyleMaskTitled |
+                     NSWindowStyleMaskClosable |
+                     NSWindowStyleMaskMiniaturizable |
+                     NSWindowStyleMaskTexturedBackground);
+@@ -554,7 +550,6 @@ static BOOL iTermWindowTypeIsCompact(iTermWindowType windowType) {
+                 }
+             }
              return (mask |
 -                    NSWindowStyleMaskTitled |
                      NSWindowStyleMaskClosable |
                      NSWindowStyleMaskMiniaturizable |
                      NSWindowStyleMaskResizable |
-@@ -794,7 +792,7 @@ static NSRect iTermRectCenteredVerticallyWithinRect(NSRect frameToCenter, NSRect
-                 [[iTermWindowShortcutLabelTitlebarAccessoryViewController alloc] initWithNibName:@"iTermWindowShortcutAccessoryView"
-                                                                                           bundle:[NSBundle bundleForClass:self.class]];
-         }
--        if ((self.window.styleMask & NSWindowStyleMaskTitled) && _shortcutAccessoryViewController) {
-+        if ((self.window.styleMask) && _shortcutAccessoryViewController) {
-             [self.window addTitlebarAccessoryViewController:_shortcutAccessoryViewController];
-             [self updateWindowNumberVisibility:nil];
-         }
-@@ -936,7 +934,7 @@ ITERM_WEAKLY_REFERENCEABLE
-     return ([iTermPreferences boolForKey:kPreferenceKeyEnableDivisionView] &&
-             preferredStyle != TAB_STYLE_MINIMAL &&
-             !togglingFullScreen_ &&
--            (self.window.styleMask & NSWindowStyleMaskTitled) &&
-+            (self.window.styleMask) &&
-             ![self anyFullScreen] &&
-             ![self tabBarVisibleOnTop]);
- }
-@@ -1884,11 +1882,11 @@ ITERM_WEAKLY_REFERENCEABLE
-
-         if (@available(macOS 10.14, *)) {
-             if (!_shortcutAccessoryViewController ||
--                !(self.window.styleMask & NSWindowStyleMaskTitled)) {
-+                !(self.window.styleMask)) {
-                 windowNumber = [NSString stringWithFormat:@"%d. ", number_ + 1];
-             }
-         } else {
--            if (self.window.styleMask & NSWindowStyleMaskTitled) {
-+            if (self.window.styleMask) {
-                 windowNumber = [NSString stringWithFormat:@"%d. ", number_ + 1];
-             }
-         }
-@@ -4149,7 +4147,7 @@ ITERM_WEAKLY_REFERENCEABLE
-         [self.window setFrame:oldFrame_ display:YES];
-         if (@available(macOS 10.14, *)) {
-             if ([self.window respondsToSelector:@selector(addTitlebarAccessoryViewController:)] &&
--                (self.window.styleMask & NSWindowStyleMaskTitled)) {
-+                (self.window.styleMask)) {
-                 [self.window addTitlebarAccessoryViewController:_shortcutAccessoryViewController];
-                 [self updateWindowNumberVisibility:nil];
-             }
-@@ -4466,7 +4464,7 @@ ITERM_WEAKLY_REFERENCEABLE
-     [self repositionWidgets];
-     [_contentView didChangeCompactness];
-     if (@available(macOS 10.14, *)) {
--        if (self.window.styleMask & NSWindowStyleMaskTitled) {
-+        if (self.window.styleMask) {
-             [self updateTabBarControlIsTitlebarAccessoryAssumingFullScreen:YES];
-         }
-     }
